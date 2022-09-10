@@ -1,22 +1,11 @@
 package shardctrler
 
-
-//
-/**
- * @Author : 刘明勇
- * @Description : 整体思路
- * 1、使用优先级队列，排序依据是每个config中shard的数量
- * 2、每次添加shard都是向最小的shard数量的组中添加
- * 3、移除就是删除并调整
- * @Date 2022/9/4 4:57 下午
- * @Param
- * @return
- **/
-
+// The number of shards.
 const NShards = 10
 
-// A configuration -- an assignment of shards to groups.
+// Config A configuration -- an assignment of shards to groups.
 // Please don't change this.
+// 最多有10个分片
 type Config struct {
 	Num    int              // config number
 	Shards [NShards]int     // shard -> gid
@@ -25,7 +14,6 @@ type Config struct {
 
 const (
 	OK             = "OK"
-	ErrNoKey       = "ErrNoKey"
 	ErrWrongLeader = "ErrWrongLeader"
 )
 
@@ -33,6 +21,8 @@ type Err string
 
 type JoinArgs struct {
 	Servers  map[int][]string // new GID -> servers mappings
+	SeqId    int
+	ClientId int64
 }
 
 type JoinReply struct {
@@ -42,6 +32,8 @@ type JoinReply struct {
 
 type LeaveArgs struct {
 	GIDs     []int
+	SeqId    int
+	ClientId int64
 }
 
 type LeaveReply struct {
@@ -52,6 +44,8 @@ type LeaveReply struct {
 type MoveArgs struct {
 	Shard    int
 	GID      int
+	SeqId    int
+	ClientId int64
 }
 
 type MoveReply struct {
@@ -60,7 +54,9 @@ type MoveReply struct {
 }
 
 type QueryArgs struct {
-	Num int // desired config number
+	Num      int // desired config number
+	SeqId    int
+	ClientId int64
 }
 
 type QueryReply struct {
